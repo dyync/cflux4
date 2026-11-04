@@ -1,0 +1,11 @@
+diffusers==0.35.1
+transformers==4.56.1
+accelerate==1.10.1
+sentencepiece==0.2.1
+protobuf==5.29.5
+safetensors==0.6.2
+huggingface_hub[hf_transfer]==0.34.4
+fastapi==0.116.1
+uvicorn[standard]==0.35.0
+pydantic==2.11.7
+pillow==11.3.0

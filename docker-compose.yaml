@@ -1,0 +1,39 @@
+name: cflux4
+
+services:
+  backend:
+    build: ./backend
+    image: cflux4-backend:latest
+    container_name: cflux4-backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - HF_TOKEN=${HF_TOKEN:?Set HF_TOKEN in .env (FLUX.1-dev is a gated model)}
+      - MODEL_ID=${MODEL_ID:-black-forest-labs/FLUX.1-dev}
+      - OFFLOAD_MODE=${OFFLOAD_MODE:-auto}
+    volumes:
+      - hf-cache:/root/.cache/huggingface
+    shm_size: "16gb"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+  frontend:
+    build: ./frontend
+    image: cflux4-frontend:latest
+    container_name: cflux4-frontend
+    restart: unless-stopped
+    ports:
+      - "7860:7860"
+    environment:
+      - BACKEND_URL=http://backend:8000
+    depends_on:
+      - backend
+
+volumes:
+  hf-cache:
